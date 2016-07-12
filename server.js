@@ -214,8 +214,9 @@ app.delete('/todos/:id', function(req, res) {
 
 app.put('/todos/:id', function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
-	var validAttributes = {};
 	var todoId = parseInt(req.params.id, 10);
+/*
+	var validAttributes = {};
 	var found = _.findWhere(todos, {
 		id: todoId
 	});
@@ -239,10 +240,32 @@ app.put('/todos/:id', function(req, res) {
 	} else {
 		//never provided value, no problem
 	}
+*/
+	var attributes = {};
 
-	_.extend(found, validAttributes);
+	if (body.hasOwnProperty('completed')) {
+		attributes.completed = body.completed;
+	}
 
-	res.json(found);
+	if (body.hasOwnProperty('description')) {
+		attributes.description = body.description;
+	}
+
+	db.todo.findById(todoId).then(function(todo) {
+		if (todo) {
+			todo.update(attributes).then(function(todo) {
+				res.json(todo.toJSON());
+			}, function(e) {
+				res.status(400).json(e);
+			});
+		} else {
+			res.status(404).send();
+		}
+	}, function() {
+		res.status(500).send();
+	});
+
+
 });
 
 db.sequelize.sync().then(function() {
