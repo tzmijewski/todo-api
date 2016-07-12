@@ -69,17 +69,28 @@ var found = false;
 
 app.get('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
-	var found = _.findWhere(todos, {
-		id: todoId
+	//var found = _.findWhere(todos, {
+	//	id: todoId
+	//});
+
+	//if (found) {
+	//	res.json(found);
+	//} else {
+	//	res.status(404).send(); //ID not found	
+	//}
+
+	db.todo.findById(todoId).then(function(todo) {
+		
+		if(!!todo){
+			res.json(todo);
+		} else{
+			res.status(404).send();
+		}
+	}).catch(function(e) {
+		if (e) {
+			res.status(500).json(e)
+		}
 	});
-
-	if (found) {
-		res.json(found);
-	} else {
-		res.status(404).send(); //ID not found	
-	}
-
-
 });
 
 //POST /todos
