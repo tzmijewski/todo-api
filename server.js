@@ -158,7 +158,12 @@ app.post('/todos', function(req, res) {
 	//	respond with 200 and todo
 	//	res.status(400).json(e)
 
-	db.todo.create({body}).then(function() {
+	console.log(body);
+
+	db.todo.create({
+		description: body.description,
+		completed: body.completed
+	}).then(function() {
 		res.json(body);
 	}).catch(function(e) {
 		if (e) {
