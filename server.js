@@ -36,11 +36,7 @@ app.get('/todos', function(req, res) {
 	db.todo.findAll({
 		where: whereObj
 	}).then(function(todos) {
-		if (!!todos) {
 			res.json(todos);
-		} else {
-			res.status(404).send();
-		}
 	}, function(e) {
 		if (e) {
 			res.status(500).json(e)
